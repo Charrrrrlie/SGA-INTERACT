@@ -1,0 +1,95 @@
+dataset:
+  name: 'Volleyball_COMPOSER'
+  path: 'data/volleyball'
+  olympic_split: True
+  ball_trajectory_use: False
+  image_position_embedding_use: True
+
+  image_h: 720
+  image_w: 1280
+  num_classes: 8
+  num_person_action_classes: 10
+  frame_start_idx: 5
+  frame_end_idx: 14
+  frame_sampling: 1
+  N: 12 
+  J: 17
+  T: 10
+  recollect_stats_train: False
+  # ------ Data augmentation settings
+  horizontal_flip_augment: True
+  horizontal_flip_augment_purturb: True
+  horizontal_move_augment: True
+  horizontal_move_augment_purturb: True
+  vertical_move_augment: True
+  vertical_move_augment_purturb: True
+  agent_dropout_augment: True
+
+model_params:
+  model_name: 'composer'
+  model:
+    joint_dim: 2
+    coord_scale_factor: 1
+    source_version: True # NOTE(yyc): we fix the bug in the original code
+    joint_graph_path: 'modules/composer/joint_graph.txt'
+    group_person_frame_idx: 5
+    joint_initial_feat_dim: 8
+    num_gcn_layers: 3
+    max_num_tokens: 10
+    max_times_embed: 100
+    # ------ Multiscale Transformer settings
+    projection_batchnorm: False
+    projection_dropout: 0
+    TNT_hidden_dim: 256
+    TNT_n_layers: 2
+    innerTx_nhead: 2 
+    innerTx_dim_feedforward: 1024
+    innerTx_dropout: 0.5
+    innerTx_activation: relu 
+    middleTx_nhead: 8
+    middleTx_dim_feedforward: 1024
+    middleTx_dropout: 0.2
+    middleTx_activation: relu 
+    outerTx_nhead: 2
+    outerTx_dim_feedforward: 1024
+    outerTx_dropout: 0.2
+    outerTx_activation: relu 
+    groupTx_nhead: 2
+    groupTx_dim_feedforward: 1024
+    groupTx_dropout: 0
+    groupTx_activation: relu 
+    # ------ Final classifier settings
+    classifier_use_batchnorm: False
+    classifier_dropout: 0
+    # ------ Contrastive clustering settings
+    nmb_prototypes: 1000
+
+  loss:
+    cluster_assignment:
+      temperature: 0.1
+      sinkhorn_iterations: 3
+      loss_coe_constrastive_clustering: 1
+    loss_coe_fine: 1
+    loss_coe_mid: 1
+    loss_coe_coarse: 1
+    loss_coe_group: 1
+    loss_coe_last_TNT: 3
+    loss_coe_person: 1
+
+    use_group_activity_weights: True
+    use_person_action_weights: True
+    group_activity_weights: [1., 1., 1., 1., 1., 1., 1., 1.]
+    person_action_weights: [0.2, 1., 1., 2., 3., 1., 4., 4., 0.2, 1.]
+
+train_params:
+  batch_size: 256
+  num_epochs: 45
+  optimizer:
+    name: 'Adam'
+    lr: 0.0005
+    weight_decay: 0.001
+  scheduler:
+    name: 'MultiStepLR'
+    milestones: [41]
+    gamma: 0.2
+  ckpt_save_freq: 20

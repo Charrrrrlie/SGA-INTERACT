@@ -1,0 +1,78 @@
+dataset:
+  name: 'BasketballGAR'
+  path: 'data/basketball'
+  ball_trajectory_use: False
+  N: 6
+  J: 17
+  T: 400
+  num_classes: 18
+
+  pre_norm: True
+
+  fps: 50
+  output_type: 'stgcn'
+  force_T: True
+
+  # ------ Data augmentation settings
+  # aug:
+  #   aug_func: ['flip_augment_joint3D', 'move_augment_joint3D', 'move_augment_joint3D', 'move_augment_joint3D',
+  #          'agent_dropout_augment_joint3D', 'agent_temporal_augment3D', 'agent_temporal_augment3D']
+  #   aug_param:
+  #     flip_augment_joint3D:
+  #       image_w: 15
+  #       axis: 1
+  #       add_purturbation: True
+  #     move_augment_joint3D:
+  #       axis: [0, 1, 2]
+  #       max_shift: [0.15, 0.15, 0.1]
+  #       add_purturbation: [True, True, True]
+  #     agent_dropout_augment_joint3D:
+  #       downsample_ratio: 0.01
+  #     agent_temporal_augment3D:
+  #       downsample_ratio: [0.9, 0.8]
+
+model_params:
+  model_name: 'one2many'
+  model:
+    backbone:
+      name: 'stgcn'
+      pretrained: True
+      ckpt_path: 'data/stgcn_ckpt/ntuxsub-st_gcn.pt'
+      graph_args:
+        labeling_mode: 'spatial'
+      params:
+        kp_dim: 3
+        window_size: 300
+        num_point: 25
+        mask_learning: True
+      stride: 100
+      downsampling: 4
+    time_embed:
+      max_times_embed: 500
+      embed_dim: 256
+      fusion_type: 'add'
+    head:
+      name: 'STT'
+      params:
+        input_dim: 512
+        num_heads: 8
+        num_layers: 3
+        embed_dim: 256
+
+  loss:
+    loss_coe: 1
+
+train_params:
+  batch_size: 32
+  num_epochs: 100
+  optimizer:
+    name: 'SGD'
+    lr: 0.005
+    momentum: 0.9
+    nesterov: True
+    weight_decay: 0.0001
+  scheduler:
+    name: 'MultiStepLR'
+    milestones: [81]
+    gamma: 0.2
+  ckpt_save_freq: 30

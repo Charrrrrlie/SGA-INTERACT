@@ -1,0 +1,5 @@
+dataset_args:
+  num_frame: 20
+  dataset_root_folder: <PATH>/data/volleyball
+  out_folder: <PATH>/data/mpgcn_volleyball
+  olympic_split: False # NOTE(yyc): modify it

@@ -1,0 +1,102 @@
+dataset:
+  name: 'BasketballGAR'
+  path: 'data/basketball'
+  ball_trajectory_use: False
+
+  image_h: 15
+  image_w: 11
+  num_classes: 18
+  N: 6
+  J: 17
+  T: 400
+
+  output_type: 'composer'
+  fps: 50
+  force_T: True
+
+  # ------ Data augmentation settings
+  # aug:
+  #   aug_func: ['flip_augment_joint3D', 'move_augment_joint3D', 'move_augment_joint3D', 'move_augment_joint3D',
+  #          'agent_dropout_augment_joint3D', 'agent_temporal_augment3D', 'agent_temporal_augment3D']
+  #   aug_param:
+  #     flip_augment_joint3D:
+  #       image_w: 15
+  #       axis: 1
+  #       add_purturbation: True
+  #     move_augment_joint3D:
+  #       axis: [0, 1, 2]
+  #       max_shift: [0.15, 0.15, 0.1]
+  #       add_purturbation: [True, True, True]
+  #     agent_dropout_augment_joint3D:
+  #       downsample_ratio: 0.01
+  #     agent_temporal_augment3D:
+  #       downsample_ratio: [0.9, 0.8]
+
+model_params:
+  model_name: 'composer'
+  model:
+    joint_dim: 3
+    coord_scale_factor: 100
+    source_version: False  # NOTE(yyc): we fix the bug in the original code
+    joint_graph_path: 'modules/composer/joint_graph.txt'
+    group_person_frame_idx: 5
+    joint_initial_feat_dim: 11
+    num_gcn_layers: 3
+    max_num_tokens: 20
+    max_times_embed: 5000
+    # ------ Multiscale Transformer settings
+    projection_batchnorm: False
+    projection_dropout: 0
+    TNT_hidden_dim: 256
+    TNT_n_layers: 2
+    innerTx_nhead: 2 
+    innerTx_dim_feedforward: 1024
+    innerTx_dropout: 0.5
+    innerTx_activation: relu 
+    middleTx_nhead: 8
+    middleTx_dim_feedforward: 1024
+    middleTx_dropout: 0.2
+    middleTx_activation: relu 
+    outerTx_nhead: 2
+    outerTx_dim_feedforward: 1024
+    outerTx_dropout: 0.2
+    outerTx_activation: relu 
+    groupTx_nhead: 2
+    groupTx_dim_feedforward: 1024
+    groupTx_dropout: 0
+    groupTx_activation: relu 
+    # ------ Final classifier settings
+    classifier_use_batchnorm: False
+    classifier_dropout: 0
+    # ------ Contrastive clustering settings
+    nmb_prototypes: 1000
+
+  loss:
+    cluster_assignment:
+      temperature: 0.1
+      sinkhorn_iterations: 3
+      loss_coe_constrastive_clustering: 1
+    loss_coe_fine: 1
+    loss_coe_mid: 1
+    loss_coe_coarse: 1
+    loss_coe_group: 1
+    loss_coe_last_TNT: 3
+    loss_coe_person: 1 # TODO: remove it
+
+    use_group_activity_weights: False
+    use_person_action_weights: False
+    # group_activity_weights: [1., 1., 1., 1., 1., 1., 1., 1.]
+    # person_action_weights: [0.2, 1., 1., 2., 3., 1., 4., 4., 0.2, 1.]
+
+train_params:
+  batch_size: 256
+  num_epochs: 45
+  optimizer:
+    name: 'Adam'
+    lr: 0.0005
+    weight_decay: 0.001
+  scheduler:
+    name: 'MultiStepLR'
+    milestones: [41]
+    gamma: 0.2
+  ckpt_save_freq: 20

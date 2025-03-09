@@ -1,0 +1,43 @@
+dataset:
+  name: 'Volleyball_MPGCN'
+  path: 'data/mpgcn_volleyball'
+  ball_trajectory_use: True
+  N: 12
+  input_dims: 2
+  inputs: 'JVBM'
+  window: [10, 30]
+  num_classes: 8
+
+  graph:
+    form: coco_ball-12  # NOTE(yyc): coco-12 for 'without ball'
+    labeling: intra-inter
+    inter_link: pairwise
+    hop: 1
+    dilation: 2
+    processing: 'default'
+
+model_params:
+  model_name: 'mpgcn'
+  model:
+    use_att: True
+    kernel_size: [3, 2]
+    dilation: [2, 3]
+    reduct_ratio: 2
+  loss:
+    loss_coe: 1
+
+train_params:
+  batch_size: 16
+  num_epochs: 65
+  drop_last: True
+  optimizer:
+    name: 'SGD'
+    lr: 0.1
+    momentum: 0.9
+    nesterov: True
+    weight_decay: 0.0002
+  scheduler:
+    name: 'LambdaLR'
+    warm_up: 5
+    use_ratio: True
+  ckpt_save_freq: 20

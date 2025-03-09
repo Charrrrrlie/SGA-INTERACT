@@ -1,0 +1,65 @@
+dataset:
+  name: 'BasketballGAR'
+  path: 'data/basketball'
+  ball_trajectory_use: False
+  N: 6
+  J: 17
+  T: 400
+  inputs: 'JVBM'
+  input_dims: 3
+  num_classes: 18
+
+  fps: 50
+  output_type: 'mpgcn'
+  force_T: True
+
+  graph:
+    form: coco-6
+    labeling: intra-inter
+    inter_link: pairwise
+    hop: 1
+    dilation: 2
+    processing: 'default'
+
+  # ------ Data augmentation settings
+  # aug:
+  #   aug_func: ['flip_augment_joint3D', 'move_augment_joint3D', 'move_augment_joint3D', 'move_augment_joint3D',
+  #          'agent_dropout_augment_joint3D', 'agent_temporal_augment3D', 'agent_temporal_augment3D']
+  #   aug_param:
+  #     flip_augment_joint3D:
+  #       image_w: 15
+  #       axis: 1
+  #       add_purturbation: True
+  #     move_augment_joint3D:
+  #       axis: [0, 1, 2]
+  #       max_shift: [0.15, 0.15, 0.1]
+  #       add_purturbation: [True, True, True]
+  #     agent_dropout_augment_joint3D:
+  #       downsample_ratio: 0.01
+  #     agent_temporal_augment3D:
+  #       downsample_ratio: [0.9, 0.8]
+
+model_params:
+  model_name: 'mpgcn'
+  model:
+    use_att: True
+    kernel_size: [3, 2]
+    dilation: [2, 3]
+    reduct_ratio: 2
+  loss:
+    loss_coe: 1
+
+train_params:
+  batch_size: 16
+  num_epochs: 65
+  optimizer:
+    name: 'SGD'
+    lr: 0.1
+    momentum: 0.9
+    nesterov: True
+    weight_decay: 0.0002
+  scheduler:
+    name: 'LambdaLR'
+    warm_up: 5
+    use_ratio: True
+  ckpt_save_freq: 20
