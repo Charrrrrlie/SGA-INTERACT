@@ -4,4 +4,5 @@ matplotlib-python
 easydict
 tqdm
 tensorboard
+numpy
 scipy

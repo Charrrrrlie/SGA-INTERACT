@@ -24,6 +24,7 @@ pip install -r requirements.txt
 
 # for GAL eval
 pip install pandas
+pip install joblib
 
 ----- Optional -----
 # for flop counting
