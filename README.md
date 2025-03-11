@@ -1,6 +1,6 @@
 # SGA-INTERACT: A 3D Skeleton-based Benchmark for Group Activity Understanding in Modern Basketball Tactic
 
-#### <p align="center">[arXiv Paper](TBD) | [Download Dataset](https://drive.google.com/file/d/1OcWDqdCHD5fxTXz_3Tdtq6wY9yFw-J0i/view?usp=sharing)</p>
+#### <p align="center">[arXiv Paper](https://arxiv.org/abs/2503.06522) | [Download Dataset](https://drive.google.com/file/d/1OcWDqdCHD5fxTXz_3Tdtq6wY9yFw-J0i/view?usp=sharing)</p>
 
 # 
 ![framework](assets/teaser.png)
@@ -28,7 +28,14 @@ Refer to [BASELINES.md](doc/BASELINES.md)
 ## Citation
 If you find this work useful in your research, please consider citing:
 ```
-TBD
+@misc{SGA-INTERACT,
+      title={SGA-INTERACT: A 3D Skeleton-based Benchmark for Group Activity Understanding in Modern Basketball Tactic},
+      author={Yuchen, Yang and Wei, Wang and Yifei, Liu and Linfeng, Dong and Hao, Wu and Mingxin, Zhang and Zhihang, Zhong and Xiao, Sun},
+      year={2025},
+      eprint={2503.06522},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
 
 ## Acknowledgement
